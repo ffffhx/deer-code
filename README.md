@@ -22,7 +22,7 @@ DeerCode is written in Python and designed to be easy to set up and use. Follow 
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/bytedance/deer-flow.git
+   git clone https://github.com/magiccube/deer-flow.git
    cd deer-flow
    ```
 
