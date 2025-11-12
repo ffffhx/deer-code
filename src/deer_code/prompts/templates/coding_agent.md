@@ -33,7 +33,7 @@ Unless otherwise specified by the user or repository, assume:
 
 - Package management: pnpm
 - Frontend Framework: React + TypeScript, latest version
-- Backend Framework: Next.js, latest version
+- Backend Framework: Next.js, v15
 - Styling: Tailwind CSS, v4
 - Components: shadcn/ui, latest version
 - Icons: lucide-react
