@@ -1,22 +1,15 @@
-# 🦌 deer-code
+# 🦌 deer-code (TypeScript Version)
 
-A minimalist yet powerful AI coding agent that helps developers learn and build intelligent coding assistants. Built with Python and featuring a VSCode-like TUI interface, deer-code demonstrates how to create AI agents that can reason, plan, and act on code.
+A minimalist yet powerful AI coding agent built with Node.js and TypeScript. Features a beautiful CLI interface powered by Ink, state management with Zustand, and AI capabilities through LangChain and LangGraph.
 
-<img width="2764" height="1988" alt="Screenshot" src="https://github.com/user-attachments/assets/3a86b15f-d616-4b56-80c9-63fccb4d8f28" />
-
-**Brought to you by** [🦌 The DeerFlow Team](https://github.com/bytedance/deer-flow).
-
-*Inspired by Anthropic's Claude Code.*
+**Migrated from Python to Node.js + TypeScript**
 
 ## 🚀 Quick Start
 
-DeerCode is written in Python and designed to be easy to set up and use. Follow these steps to get started:
-
 ### Prerequisites
 
-- [Python](https://www.python.org/downloads/) 3.12 or higher
-- [uv](https://docs.astral.sh/uv/) (recommended for dependency management)
-- [langgraph-cli](https://docs.langchain.com/langsmith/cli) (for development and debugging)
+- [Node.js](https://nodejs.org/) 18.0 or higher
+- [npm](https://www.npmjs.com/) or [yarn](https://yarnpkg.com/)
 
 ### Installation
 
@@ -28,7 +21,12 @@ DeerCode is written in Python and designed to be easy to set up and use. Follow 
 
 2. **Install dependencies:**
    ```bash
-   make install
+   npm install
+   ```
+
+3. **Build the project:**
+   ```bash
+   npm run build
    ```
 
 ### Configuration
@@ -43,64 +41,99 @@ DeerCode is written in Python and designed to be easy to set up and use. Follow 
 ```yaml
 models:
   chat_model:
-    model: 'gpt-5-2025-08-07'
+    model: 'gpt-4o-2024-08-06'
     api_base: 'https://api.openai.com/v1'
     api_key: $OPENAI_API_KEY
     temperature: 0
     max_tokens: 8192
-    extra_body:
-      reasoning_effort: minimal # `minimal`, `low`, `medium` or `high`
-  # Alternatively, uncomment the following section to use Doubao's model:
-  #
-  # chat_model:
-  #   type: doubao
-  #   model: 'doubao-seed-1-6-250615'
-  #   api_base: 'https://ark.cn-beijing.volces.com/api/v3'
-  #   api_key: $ARK_API_KEY
-  #   temperature: 0
-  #   max_tokens: 8192
-  #   extra_body:
-  #     thinking:
-  #       type: auto
-tools:
-  mcp_servers:
-    context7:
-      transport: 'streamable_http'
-      url: 'https://mcp.context7.com/mcp'
-    # your_mcp_server:
-    #   ...
 ```
 
 ### Running the Application
 
 **Start deer-code:**
 ```bash
-uv run -m deer_code.main "/path/to/your/developing/project"
+npm start "/path/to/your/project"
 ```
 
-**Development mode (with LangGraph CLI):**
-
-First, change `env.PROJECT_ROOT` in `langgraph.json` file.
-
-Then, run the following command:
+**Development mode:**
 ```bash
-make dev
+npm run dev "/path/to/your/project"
 ```
-
-Now, open the browser and navigate to `https://agentchat.vercel.app/?apiUrl=http://localhost:2024&assistantId=coding_agent` to chat with the agent.
 
 ## 🌟 Features
 
-- [x] **Beginner-friendly**: Simple project structure designed for learning
-- [x] **VSCode-like CUI**: Intuitive terminal interface
-- [x] **OpenAI Compatible**: Works with any OpenAI-compatible API
-- [x] **ReAct Framework**: Reasoning, planning, and acting capabilities
-- [x] **Multi-turn Conversations**: Maintains context across interactions
-- [x] **Task Planning**: Built-in todo system for project management
-- [x] **Code Generation**: AI-powered code creation and editing
-- [x] **Code Search**: Intelligent code location and search
-- [x] **Bash Execution**: Bash command execution
-- [x] **MCP Integration**: Bring your own MCP tools to enhance the agent's capabilities
+- ✅ **TypeScript**: Fully typed codebase for better developer experience
+- ✅ **Ink UI**: Beautiful terminal interface with React components
+- ✅ **Zustand**: Simple and powerful state management
+- ✅ **LangChain.js**: AI-powered code assistance
+- ✅ **LangGraph**: Agent orchestration and workflow management
+- ✅ **Multi-turn Conversations**: Maintains context across interactions
+- ✅ **Task Planning**: Built-in todo system for project management
+- ✅ **Code Generation**: AI-powered code creation and editing
+- ✅ **Code Search**: Intelligent code location and search
+- ✅ **Bash Execution**: Execute bash commands directly
+- ✅ **File Operations**: View, create, and edit files
+
+## 📁 Project Structure
+
+```
+deer-code/
+├── src/
+│   ├── agents/          # LangGraph agents
+│   ├── cli/             # Ink UI components
+│   ├── config/          # Configuration management
+│   ├── models/          # LLM model initialization
+│   ├── store/           # Zustand state management
+│   ├── tools/           # Agent tools (bash, editor, fs, todo)
+│   ├── project.ts       # Project management
+│   └── main.ts          # Entry point
+├── package.json
+├── tsconfig.json
+└── config.yaml
+```
+
+## 🛠️ Available Tools
+
+- **bash**: Execute bash commands in a persistent shell
+- **tree**: Display directory structure
+- **ls**: List files and directories
+- **grep**: Search for patterns in files (powered by ripgrep)
+- **text_editor**: View, create, and edit files
+- **todo_write**: Manage TODO items
+
+## 🎨 UI Components
+
+Built with Ink (React for CLI):
+
+- **ChatView**: Interactive chat interface with the AI assistant
+- **EditorView**: File viewer with tab support
+- **TerminalView**: Display terminal output
+- **TodoView**: Task management interface
+
+## 🔧 Development
+
+**Type checking:**
+```bash
+npm run typecheck
+```
+
+**Linting:**
+```bash
+npm run lint
+```
+
+**Build:**
+```bash
+npm run build
+```
+
+## 📝 Scripts
+
+- `npm run dev` - Run in development mode with tsx
+- `npm run build` - Build TypeScript to JavaScript
+- `npm start` - Run the built application
+- `npm run typecheck` - Type check without emitting
+- `npm run lint` - Lint the codebase
 
 ## 🤝 Contributing
 
@@ -112,6 +145,20 @@ This project is open source and available under the [MIT License](./LICENSE).
 
 ## 🙏 Acknowledgments
 
+- Original Python version by [Henry Li](https://github.com/magiccube)
 - Inspired by [Anthropic's Claude Code](https://github.com/anthropics/claude-code)
-- Built with [Textual](https://github.com/Textualize/textual) for the TUI interface
-- Powered by [LangGraph](https://github.com/langchain-ai/langgraph) for agent orchestration
+- Built with [Ink](https://github.com/vadimdemedes/ink) for the CLI interface
+- Powered by [LangChain.js](https://github.com/langchain-ai/langchainjs) and [LangGraph](https://github.com/langchain-ai/langgraphjs)
+- State management by [Zustand](https://github.com/pmndrs/zustand)
+
+## 🔄 Migration Notes
+
+This is a TypeScript/Node.js port of the original Python version. Key changes:
+
+- **Python → TypeScript**: Full type safety and modern JavaScript features
+- **Textual → Ink**: React-based terminal UI framework
+- **Python state → Zustand**: Lightweight state management
+- **pexpect → node-pty**: Terminal emulation for Node.js
+- **LangChain Python → LangChain.js**: JavaScript/TypeScript LangChain implementation
+
+The core functionality and agent capabilities remain the same, with improved developer experience through TypeScript and modern tooling.

@@ -1,19 +1,27 @@
-# Python-generated files
-__pycache__/
-*.py[oc]
-build/
+node_modules/
 dist/
-wheels/
-*.egg-info
-
-# LangGraph
-.langgraph_api/
-
-# OS
-.DS_Store
-
-# Virtual environments
-.venv
-
-# Config
+build/
+*.log
+.env
 config.yaml
+.DS_Store
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+.venv/
+ENV/
+env/
+*.egg-info/
+.eggs/
+.pytest_cache/
+.mypy_cache/
+.tox/
