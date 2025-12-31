@@ -22,12 +22,12 @@ Never use this tool to perform any harmful or dangerous operations.
 - Use \`text_editor\` tool with \`create\` command to create new files.`,
   schema: z.object({
     command: z.string().describe('The command to execute.'),
-    reset_cwd: z.boolean().optional().default(false).describe('Whether to reset the current working directory to the project root directory.'),
+    reset_cwd: z.boolean().nullable().default(false).describe('Whether to reset the current working directory to the project root directory.'),
   }),
-  func: async ({ command, reset_cwd }: { command: string; reset_cwd?: boolean }) => {
+  func: async ({ command, reset_cwd }: { command: string; reset_cwd?: boolean | null }) => {
     if (keepAliveTerminal === null) {
       keepAliveTerminal = new BashTerminal(project.rootDir);
-    } else if (reset_cwd) {
+    } else if (reset_cwd === true) {
       keepAliveTerminal.close();
       keepAliveTerminal = new BashTerminal(project.rootDir);
     }

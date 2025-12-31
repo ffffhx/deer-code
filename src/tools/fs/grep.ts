@@ -10,56 +10,57 @@ ALWAYS use this tool for search tasks. NEVER invoke \`grep\` or \`rg\` as a Bash
 Supports full regex syntax, file filtering, and various output modes.`,
   schema: z.object({
     pattern: z.string().describe('The regular expression pattern to search for in file contents. Uses ripgrep syntax - literal braces need escaping.'),
-    path: z.string().optional().describe('File or directory to search in. Defaults to current working directory if not specified.'),
-    glob: z.string().optional().describe('Glob pattern to filter files (e.g., "*.js", "*.{ts,tsx}").'),
-    output_mode: z.enum(['content', 'files_with_matches', 'count']).optional().default('files_with_matches').describe('Output mode - "content" shows matching lines, "files_with_matches" shows only file paths, "count" shows match counts.'),
-    B: z.number().optional().describe('Number of lines to show before each match. Only works with output_mode="content".'),
-    A: z.number().optional().describe('Number of lines to show after each match. Only works with output_mode="content".'),
-    C: z.number().optional().describe('Number of lines to show before and after each match. Only works with output_mode="content".'),
-    n: z.boolean().optional().describe('Show line numbers in output. Only works with output_mode="content".'),
-    i: z.boolean().optional().describe('Enable case insensitive search.'),
-    type: z.string().optional().describe('File type to search (e.g., "js", "py", "rust", "go", "java").'),
-    head_limit: z.number().optional().describe('Limit output to first N lines/entries.'),
-    multiline: z.boolean().optional().default(false).describe('Enable multiline mode where patterns can span lines.'),
+    path: z.string().optional().nullable().describe('File or directory to search in. Defaults to current working directory if not specified.'),
+    glob: z.string().optional().nullable().describe('Glob pattern to filter files (e.g., "*.js", "*.{ts,tsx}").'),
+    output_mode: z.enum(['content', 'files_with_matches', 'count']).nullable().default('files_with_matches').describe('Output mode - "content" shows matching lines, "files_with_matches" shows only file paths, "count" shows match counts.'),
+    B: z.number().optional().nullable().describe('Number of lines to show before each match. Only works with output_mode="content".'),
+    A: z.number().optional().nullable().describe('Number of lines to show after each match. Only works with output_mode="content".'),
+    C: z.number().optional().nullable().describe('Number of lines to show before and after each match. Only works with output_mode="content".'),
+    n: z.boolean().optional().nullable().describe('Show line numbers in output. Only works with output_mode="content".'),
+    i: z.boolean().optional().nullable().describe('Enable case insensitive search.'),
+    type: z.string().optional().nullable().describe('File type to search (e.g., "js", "py", "rust", "go", "java").'),
+    head_limit: z.number().optional().nullable().describe('Limit output to first N lines/entries.'),
+    multiline: z.boolean().nullable().default(false).describe('Enable multiline mode where patterns can span lines.'),
   }),
   func: async ({ pattern, path, glob, output_mode, B, A, C, n, i, type, head_limit, multiline }) => {
     const cmd = ['rg'];
     
     cmd.push(pattern);
-    const searchPath = path || '.';
+    const searchPath = path ?? '.';
     cmd.push(searchPath);
     
-    if (output_mode === 'files_with_matches') {
+    const effectiveOutputMode = output_mode ?? 'files_with_matches';
+    if (effectiveOutputMode === 'files_with_matches') {
       cmd.push('-l');
-    } else if (output_mode === 'count') {
+    } else if (effectiveOutputMode === 'count') {
       cmd.push('-c');
     }
     
-    if (output_mode === 'content') {
-      if (C !== undefined) {
+    if (effectiveOutputMode === 'content') {
+      if (C != null) {
         cmd.push('-C', String(C));
       } else {
-        if (B !== undefined) {
+        if (B != null) {
           cmd.push('-B', String(B));
         }
-        if (A !== undefined) {
+        if (A != null) {
           cmd.push('-A', String(A));
         }
       }
-      if (n) {
+      if (n === true) {
         cmd.push('-n');
       }
     }
     
-    if (i) {
+    if (i === true) {
       cmd.push('-i');
     }
     
-    if (type) {
+    if (type != null) {
       cmd.push('--type', type);
     }
     
-    if (glob) {
+    if (glob != null) {
       cmd.push('--glob', glob);
     }
     
@@ -67,7 +68,7 @@ Supports full regex syntax, file filtering, and various output modes.`,
       cmd.push('--glob', `!${ignorePattern}`);
     }
     
-    if (multiline) {
+    if (multiline === true) {
       cmd.push('-U', '--multiline-dotall');
     }
     

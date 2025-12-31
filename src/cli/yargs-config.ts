@@ -35,11 +35,11 @@ export function setupYargs(argv: string[]) {
             type: 'string',
           });
       },
-      (argv) => {
+      async (argv) => {
         if (argv.dir) {
           project.rootDir = argv.dir;
         }
-        startCommand({
+        await startCommand({
           new: argv.new,
           name: argv.name,
         });

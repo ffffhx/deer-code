@@ -7,7 +7,7 @@ const TodoItemSchema = z.object({
   content: z.string(),
   status: z.nativeEnum(TodoStatus),
   priority: z.nativeEnum(TodoPriority),
-  created_at: z.number().optional(),
+  created_at: z.number().optional().nullable(),
 });
 
 export const todoWriteTool = new DynamicStructuredTool({

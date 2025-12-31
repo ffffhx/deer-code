@@ -26,7 +26,18 @@ models:
   #       type: auto
 
 tools:
+  # MCP (Model Context Protocol) servers configuration
+  # You can add multiple MCP servers here to extend the agent's capabilities
   mcp_servers:
-    context7:
-      transport: 'streamable_http'
-      url: 'https://mcp.context7.com/mcp'
+    # Example: Context7 MCP server (HTTP transport)
+    # context7:
+    #   transport: 'streamable_http'
+    #   url: 'https://mcp.context7.com/mcp'
+    
+    # Example: Local MCP server (stdio transport)
+    # my_local_server:
+    #   transport: 'stdio'
+    #   command: 'node'
+    #   args: ['path/to/your/mcp-server.js']
+    #   env:
+    #     API_KEY: $YOUR_API_KEY

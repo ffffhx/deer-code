@@ -10,8 +10,8 @@ export const lsTool = new DynamicStructuredTool({
   description: 'Lists files and directories in a given path. Optionally provide an array of glob patterns to match and ignore.',
   schema: z.object({
     path: z.string().describe('The absolute path to list files and directories from. Relative paths are **not** allowed.'),
-    match: z.array(z.string()).optional().describe('An optional array of glob patterns to match.'),
-    ignore: z.array(z.string()).optional().describe('An optional array of glob patterns to ignore.'),
+    match: z.array(z.string()).optional().nullable().describe('An optional array of glob patterns to match.'),
+    ignore: z.array(z.string()).optional().nullable().describe('An optional array of glob patterns to ignore.'),
   }),
   func: async ({ path: targetPath, match, ignore }: { path: string; match?: string[]; ignore?: string[] }) => {
     const resolvedPath = path.resolve(targetPath);

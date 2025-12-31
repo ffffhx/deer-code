@@ -13,11 +13,13 @@ import {
 import { SessionContext } from '../session/index.js';
 import { ContextManager } from '../context/index.js';
 import { getConfigSection } from '../config/index.js';
+import { getGlobalMCPManager, loadMCPTools } from '../mcp/index.js';
 
 export class CodingAgent {
   private model: ChatOpenAI;
   private tools: any[];
   private contextManager: ContextManager;
+  private mcpToolsLoaded = false;
 
   constructor(pluginTools: any[] = []) {
     this.model = initChatModel() as ChatOpenAI;
@@ -44,9 +46,36 @@ export class CodingAgent {
     });
   }
 
+  private async loadMCPTools(): Promise<void> {
+    if (this.mcpToolsLoaded) {
+      return;
+    }
+
+    try {
+      const mcpManager = getGlobalMCPManager();
+      if (mcpManager.getServerCount() > 0) {
+        const mcpTools = await loadMCPTools(mcpManager);
+        this.tools.push(...mcpTools);
+        console.log(`[MCP] Loaded ${mcpTools.length} tools from MCP servers`);
+      }
+      this.mcpToolsLoaded = true;
+    } catch (error) {
+      console.error('[MCP] Failed to load MCP tools:', error);
+    }
+  }
+
   private getSystemPrompt(context: SessionContext): string {
     const userInfo = context.userName ? `User Name: ${context.userName}\n` : '';
     const isFirstMessage = context.messages.length === 0;
+    
+    const mcpToolsList = this.tools
+      .filter(tool => tool.name.startsWith('mcp_'))
+      .map(tool => `- ${tool.name}: ${tool.description}`)
+      .join('\n');
+    
+    const mcpToolsSection = mcpToolsList 
+      ? `\n\nAdditional MCP Tools:\n${mcpToolsList}` 
+      : '';
     
     const basePrompt = `You are a powerful AI coding assistant. You help users with software engineering tasks.
 
@@ -58,7 +87,7 @@ You have access to the following tools:
 - ls: List files and directories
 - tree: Display directory structure
 - text_editor: View and edit files
-- todo_write: Manage TODO items
+- todo_write: Manage TODO items${mcpToolsSection}
 
 Always be helpful, accurate, and follow best practices.`;
 
@@ -74,6 +103,8 @@ IMPORTANT: DO NOT repeat information about your context length, token limits, mo
   }
 
   async *execute(context: SessionContext): AsyncGenerator<any, void, unknown> {
+    await this.loadMCPTools();
+
     const managedContext = await this.contextManager.manageContext(
       context.messages
     );
@@ -105,5 +136,10 @@ IMPORTANT: DO NOT repeat information about your context length, token limits, mo
 
   cleanup(): void {
     this.contextManager.cleanup();
+    
+    const mcpManager = getGlobalMCPManager();
+    mcpManager.disconnectAll().catch((error) => {
+      console.error('[MCP] Error during cleanup:', error);
+    });
   }
 }

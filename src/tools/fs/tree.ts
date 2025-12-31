@@ -81,11 +81,11 @@ export const treeTool = new DynamicStructuredTool({
 Shows files and directories in a hierarchical tree structure.
 Automatically excludes common ignore patterns (version control, dependencies, build artifacts, etc.).`,
   schema: z.object({
-    path: z.string().optional().describe('Directory path to display. Defaults to current working directory if not specified.'),
-    max_depth: z.number().optional().default(3).describe('Maximum depth to traverse. Should be less than or equal to 3. Defaults to 3.'),
+    path: z.string().optional().nullable().describe('Directory path to display. Defaults to current working directory if not specified.'),
+    max_depth: z.number().nullable().default(3).describe('Maximum depth to traverse. Should be less than or equal to 3. Defaults to 3.'),
   }),
-  func: async ({ path: searchPath, max_depth }: { path?: string; max_depth?: number }) => {
-    const targetPath = searchPath || '.';
+  func: async ({ path: searchPath, max_depth }: { path?: string | null; max_depth?: number | null }) => {
+    const targetPath = searchPath ?? '.';
     
     try {
       const resolvedPath = path.resolve(targetPath);
@@ -102,7 +102,7 @@ Automatically excludes common ignore patterns (version control, dependencies, bu
       const treeLines = generateTree(
         resolvedPath,
         '',
-        max_depth || 3,
+        max_depth ?? 3,
         0,
         DEFAULT_IGNORE_PATTERNS
       );
