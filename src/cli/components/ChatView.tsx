@@ -62,12 +62,7 @@ export const ChatView: React.FC<ChatViewProps> = ({ messages, isGenerating, onSu
 
   return (
     <Box flexDirection="column" height="100%">
-      <Box flexDirection="column" flexGrow={1} paddingX={1}>
-        <Box marginBottom={1}>
-          <Text bold underline>
-            Chat
-          </Text>
-        </Box>
+      <Box flexDirection="column" flexGrow={1} paddingX={1} paddingY={1}>
         {messages.map((msg, idx) => renderMessage(msg, idx))}
         {isGenerating && (
           <Box marginTop={1}>
