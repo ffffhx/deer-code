@@ -1,5 +1,6 @@
 import { BaseMessage } from '@langchain/core/messages';
 import { TodoItem } from '../tools/todo/types.js';
+import { TokenUsage } from '../context/index.js';
 
 export interface SessionContext {
   sessionId: string;
@@ -8,6 +9,8 @@ export interface SessionContext {
   todos: TodoItem[];
   createdAt: number;
   updatedAt: number;
+  tokenUsage?: TokenUsage;
+  compressionCount?: number;
 }
 
 export interface SessionMetadata {

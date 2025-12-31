@@ -82,11 +82,15 @@ deer-code/
 │   ├── agents/          # LangGraph agents
 │   ├── cli/             # Ink UI components
 │   ├── config/          # Configuration management
+│   ├── context/         # Token management and compression
 │   ├── models/          # LLM model initialization
+│   ├── session/         # Session management
 │   ├── store/           # Zustand state management
 │   ├── tools/           # Agent tools (bash, editor, fs, todo)
 │   ├── project.ts       # Project management
 │   └── main.ts          # Entry point
+├── docs/
+│   └── TOKEN_MANAGEMENT.md  # Token management documentation
 ├── package.json
 ├── tsconfig.json
 └── config.yaml
@@ -100,6 +104,45 @@ deer-code/
 - **grep**: Search for patterns in files (powered by ripgrep)
 - **text_editor**: View, create, and edit files
 - **todo_write**: Manage TODO items
+
+## 🧠 Token Management & Context Compression
+
+deer-code includes intelligent token management to handle long conversations efficiently:
+
+### Features
+
+- **Automatic Token Counting**: Tracks token usage for all messages using `js-tiktoken`
+- **Smart Compression**: Automatically compresses conversation history when approaching token limits
+- **Configurable Thresholds**: Set custom limits and compression triggers
+- **Intelligent Summarization**: Uses LLM to create meaningful summaries of compressed history
+- **Context Preservation**: Keeps system messages and recent conversations intact
+
+### How It Works
+
+1. **Token Tracking**: Every message is counted and tracked
+2. **Threshold Detection**: When tokens reach 80% (configurable) of the limit, compression triggers
+3. **Smart Compression**: 
+   - Preserves system messages
+   - Keeps the last 10 messages for context
+   - Compresses middle messages into a summary
+4. **Seamless Integration**: Happens automatically in the background
+
+### Configuration
+
+```yaml
+models:
+  chat_model:
+    max_tokens: 100000              # Maximum token limit
+    compression_threshold: 0.8      # Compress at 80% of max_tokens
+```
+
+### Example Output
+
+```
+[Context Compression] Compressed 101 messages to 12, saved 930 tokens
+```
+
+For detailed documentation, see [docs/TOKEN_MANAGEMENT.md](docs/TOKEN_MANAGEMENT.md)
 
 ## 🎨 UI Components
 
