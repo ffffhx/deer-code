@@ -14,6 +14,7 @@ import { SessionContext } from '../session/index.js';
 import { ContextManager } from '../context/index.js';
 import { getConfigSection } from '../config/index.js';
 import { getGlobalMCPManager, loadMCPTools } from '../mcp/index.js';
+import { createSystemPrompt, ToolInfo } from '../prompts/index.js';
 
 export class CodingAgent {
   private model: ChatOpenAI;
@@ -65,41 +66,20 @@ export class CodingAgent {
   }
 
   private getSystemPrompt(context: SessionContext): string {
-    const userInfo = context.userName ? `User Name: ${context.userName}\n` : '';
     const isFirstMessage = context.messages.length === 0;
     
-    const mcpToolsList = this.tools
-      .filter(tool => tool.name.startsWith('mcp_'))
-      .map(tool => `- ${tool.name}: ${tool.description}`)
-      .join('\n');
-    
-    const mcpToolsSection = mcpToolsList 
-      ? `\n\nAdditional MCP Tools:\n${mcpToolsList}` 
-      : '';
-    
-    const basePrompt = `You are a powerful AI coding assistant. You help users with software engineering tasks.
+    const availableTools: ToolInfo[] = this.tools.map(tool => ({
+      name: tool.name,
+      description: tool.description || '',
+      category: tool.name.startsWith('mcp_') ? 'mcp' : 'builtin',
+    }));
 
-${userInfo}Project Root Directory: ${project.rootDir}
-
-You have access to the following tools:
-- bash: Execute bash commands
-- grep: Search for patterns in files
-- ls: List files and directories
-- tree: Display directory structure
-- text_editor: View and edit files
-- todo_write: Manage TODO items${mcpToolsSection}
-
-Always be helpful, accurate, and follow best practices.`;
-
-    if (isFirstMessage) {
-      return `${basePrompt}
-
-IMPORTANT: When greeting the user for the first time, you may briefly introduce yourself and your capabilities. However, DO NOT repeat information about your context length, token limits, or tool environment limitations in subsequent conversations unless specifically asked by the user.`;
-    }
-    
-    return `${basePrompt}
-
-IMPORTANT: DO NOT repeat information about your context length, token limits, model name, or tool environment limitations unless specifically asked by the user. Focus on helping with the current task.`;
+    return createSystemPrompt({
+      userName: context.userName || undefined,
+      projectRoot: project.rootDir,
+      isFirstMessage,
+      availableTools,
+    });
   }
 
   async *execute(context: SessionContext): AsyncGenerator<any, void, unknown> {
