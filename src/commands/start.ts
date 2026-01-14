@@ -1,9 +1,9 @@
 import React from 'react';
 import { render } from 'ink';
-import { App } from '../App.js';
-import { SessionManager } from '../../session/index.js';
-import { initializeMCPServers } from '../../mcp/index.js';
-import { getConfigSection } from '../../config/index.js';
+import { App } from '../ui/App.js';
+import { SessionManager } from '../session/index.js';
+import { initializeMCPServers } from '../mcp/index.js';
+import { getConfigSection } from '../config/index.js';
 
 export interface StartOptions {
   new?: boolean;

@@ -7,7 +7,7 @@ import {
   switchCommand,
   deleteCommand,
   infoCommand,
-} from './commands/index.js';
+} from './index.js';
 
 export function setupYargs(argv: string[]) {
   return yargs(hideBin(argv))

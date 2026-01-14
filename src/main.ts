@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { config } from 'dotenv';
-import { setupYargs } from './cli/yargs-config.js';
+import { setupYargs } from './commands/yargs-config.js';
 
 config();
 

@@ -1,4 +1,4 @@
-import { SessionManager } from '../../session/index.js';
+import { SessionManager } from '../session/index.js';
 import chalk from 'chalk';
 
 export function listCommand(): void {
