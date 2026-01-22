@@ -1,0 +1,44 @@
+import type { Theme } from './types.js';
+import { themePresets, defaultTheme } from './presets.js';
+
+class ThemeManager {
+  private currentTheme: Theme = defaultTheme;
+  private themes: Map<string, Theme> = new Map();
+
+  constructor() {
+    Object.entries(themePresets).forEach(([name, theme]) => {
+      this.themes.set(name, theme);
+    });
+  }
+
+  getTheme(): Theme {
+    return this.currentTheme;
+  }
+
+  setTheme(name: string): boolean {
+    const theme = this.themes.get(name);
+    if (theme) {
+      this.currentTheme = theme;
+      return true;
+    }
+    return false;
+  }
+
+  hasTheme(name: string): boolean {
+    return this.themes.has(name);
+  }
+
+  listThemes(): string[] {
+    return Array.from(this.themes.keys());
+  }
+
+  registerTheme(theme: Theme): void {
+    this.themes.set(theme.name, theme);
+  }
+
+  getCurrentThemeName(): string {
+    return this.currentTheme.name;
+  }
+}
+
+export const themeManager = new ThemeManager();

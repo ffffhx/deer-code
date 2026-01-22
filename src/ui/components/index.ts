@@ -1,4 +1,10 @@
-export { ChatView } from './ChatView.js';
-export { EditorView } from './EditorView.js';
-export { TerminalView } from './TerminalView.js';
-export { TodoView } from './TodoView.js';
+export * from './ChatView.js';
+export * from './EditorView.js';
+export * from './TerminalView.js';
+export * from './TodoView.js';
+export * from './MessageArea.js';
+export * from './MessageRenderer.js';
+export * from './InputArea.js';
+export * from './StatusBar.js';
+export * from './ThinkingBlock.js';
+export * from './TodoPanel.js';

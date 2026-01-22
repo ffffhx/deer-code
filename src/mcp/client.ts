@@ -7,6 +7,7 @@ import {
   MCPTool,
   MCPToolCallResult,
 } from './types.js';
+import { startupLogger } from '../utils/startup-logger.js';
 
 export class MCPClient {
   private config: MCPServerConfig;
@@ -54,17 +55,32 @@ export class MCPClient {
     });
 
     this.process.stderr?.on('data', (data: Buffer) => {
-      console.error(`MCP Server stderr: ${data.toString()}`);
+      const message = data.toString();
+      const lowerMessage = message.toLowerCase();
+      
+      let type: 'info' | 'error' | 'warning' = 'info';
+      if (lowerMessage.includes('error') || lowerMessage.includes('failed') || lowerMessage.includes('fatal')) {
+        type = 'error';
+      } else if (lowerMessage.includes('warn') || lowerMessage.includes('warning') || lowerMessage.includes('avoid')) {
+        type = 'warning';
+      }
+      
+      if (!this.initialized) {
+        startupLogger.log(`MCP Server stderr: ${message}`, type);
+      }
     });
 
     this.process.on('error', (error) => {
+      startupLogger.log(`MCP Server process error: ${error.message}`, 'error');
       console.error('MCP Server process error:', error);
       this.rejectAllPending(error);
     });
 
     this.process.on('exit', (code) => {
       if (code !== 0) {
-        console.error(`MCP Server exited with code ${code}`);
+        const message = `MCP Server exited with code ${code}`;
+        startupLogger.log(message, 'error');
+        console.error(message);
       }
       this.rejectAllPending(new Error(`Process exited with code ${code}`));
     });
@@ -124,6 +140,25 @@ export class MCPClient {
     } else {
       return this.sendStdioRequest(request);
     }
+  }
+
+  private sendNotification(method: string, params?: any): void {
+    const notification = {
+      jsonrpc: '2.0',
+      method,
+      params,
+    };
+
+    if (this.config.transport === 'streamable_http') {
+      return;
+    }
+
+    if (!this.process?.stdin) {
+      throw new Error('Process not initialized');
+    }
+
+    const message = JSON.stringify(notification) + '\n';
+    this.process.stdin.write(message);
   }
 
   private async sendStdioRequest(request: MCPRequest): Promise<any> {
@@ -195,7 +230,7 @@ export class MCPClient {
     this.serverInfo = result;
     this.initialized = true;
 
-    await this.sendRequest('initialized');
+    this.sendNotification('notifications/initialized');
   }
 
   async listTools(): Promise<MCPTool[]> {

@@ -1,0 +1,193 @@
+{
+  "canvas": {
+    "width": 1080,
+    "height": 1920,
+    "background": {
+      "type": "solid",
+      "color": "#F0F8FF"
+    }
+  },
+  "header": {
+    "title": {
+      "text": "大雄要开始编写技术方案了",
+      "position": { "x": 540, "y": 100 },
+      "style": {
+        "fontFamily": "Doraemon, sans-serif",
+        "fontSize": 56,
+        "fontWeight": "bold",
+        "color": "#0095D9",
+        "textAlign": "center",
+        "stroke": "#FFFFFF",
+        "strokeWidth": 4,
+        "textShadow": "3px 3px 0px #FFD700"
+      }
+    },
+    "decoration": {
+      "type": "stars",
+      "positions": [
+        { "x": 100, "y": 80 },
+        { "x": 980, "y": 80 },
+        { "x": 200, "y": 120 },
+        { "x": 880, "y": 120 }
+      ],
+      "color": "#FFD700",
+      "size": 24
+    }
+  },
+  "panels": [
+    {
+      "id": "panel1",
+      "position": { "x": 90, "y": 200 },
+      "size": { "width": 450, "height": 380 },
+      "border": {
+        "width": 4,
+        "color": "#000000",
+        "radius": 12
+      },
+      "background": "#FFFFFF",
+      "scene": {
+        "location": "公司",
+        "characters": [
+          {
+            "name": "大雄",
+            "position": { "x": 150, "y": 350 },
+            "expression": "压力大",
+            "pose": "坐在电脑桌前"
+          },
+          {
+            "name": "空啤酒瓶",
+            "position": { "x": 200, "y": 320 },
+            "description": "堆积如山"
+          }
+        ],
+        "dialogues": [
+          {
+            "speaker": "大雄",
+            "text": "哇啊！哪些组件可以复用？这个具体要怎么实现好呢？哆啦A梦我需要你",
+            "position": { "x": 320, "y": 260 },
+            "style": {
+              "bubbleType": "speech",
+              "backgroundColor": "#FFFFFF",
+              "borderColor": "#000000",
+              "fontSize": 22,
+              "textAlign": "center"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "panel2",
+      "position": { "x": 540, "y": 200 },
+      "size": { "width": 450, "height": 380 },
+      "border": {
+        "width": 4,
+        "color": "#000000",
+        "radius": 12
+      },
+      "background": "#FFFFFF",
+      "scene": {
+        "characters": [
+          {
+            "name": "哆啦A梦",
+            "position": { "x": 720, "y": 360 },
+            "expression": "耗时",
+            "pose": "手指屏幕"
+          }
+        ],
+        "dialogues": [
+          {
+            "speaker": "哆啦A梦",
+            "text": "大雄，我们的项目规范是这样的/n 那个组件可以直接复用胖虎写过的，不用重复实现一遍啦",
+            "position": { "x": 720, "y": 280 },
+            "style": {
+              "bubbleType": "speech",
+              "backgroundColor": "#FFFFFF",
+              "borderColor": "#000000",
+              "fontSize": 22,
+              "textAlign": "center"
+            }
+          }
+        ],
+        "props": [
+          {
+            "name": "空啤酒瓶",
+            "position": { "x": 720, "y": 420 },
+            "description": "堆积如山",
+            "color": "#0095D9",
+            "glow": true
+          }
+        ]
+      }
+    }
+  ],
+  "footer": {
+    "text": "注：记得给技术方案加上自己的思考哦！- 哆啦A梦",
+    "position": { "x": 540, "y": 1860 },
+    "style": {
+      "fontFamily": "Doraemon, sans-serif",
+      "fontSize": 24,
+      "color": "#0095D9",
+      "textAlign": "center"
+    },
+    "icon": {
+      "type": "doraemon_bell",
+      "position": { "x": 900, "y": 1850 },
+      "size": 32
+    }
+  },
+  "globalStyles": {
+    "characterStyles": {
+      "哆啦A梦": {
+        "primaryColor": "#0095D9",
+        "secondaryColor": "#FFFFFF",
+        "accentColor": "#FF0000"
+      },
+      "大雄": {
+        "primaryColor": "#FFD700",
+        "glassesColor": "#000000"
+      },
+      "静香": {
+        "primaryColor": "#FFB6C1",
+        "hairColor": "#8B4513"
+      },
+      "胖虎": {
+        "primaryColor": "#FF6347",
+        "shirtColor": "#FFA500"
+      },
+      "小夫": {
+        "primaryColor": "#98FB98",
+        "hatColor": "#000000"
+      }
+    },
+    "speechBubbleDefaults": {
+      "borderWidth": 3,
+      "borderColor": "#000000",
+      "backgroundColor": "#FFFFFF",
+      "tailStyle": "classic_manga",
+      "font": "Comic Sans MS, sans-serif"
+    }
+  },
+  "soundEffects": [
+    {
+      "panel": 2,
+      "text": "叮～",
+      "position": { "x": 750, "y": 380 },
+      "style": {
+        "fontSize": 32,
+        "color": "#FFD700",
+        "fontWeight": "bold"
+      }
+    },
+    {
+      "panel": 7,
+      "text": "哗啦啦～",
+      "position": { "x": 300, "y": 1500 },
+      "style": {
+        "fontSize": 28,
+        "color": "#0095D9",
+        "fontWeight": "bold"
+      }
+    }
+  ]
+}

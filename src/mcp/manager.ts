@@ -1,5 +1,6 @@
 import { MCPClient } from './client.js';
 import { MCPServerConfig, MCPTool } from './types.js';
+import { startupLogger } from '../utils/startup-logger.js';
 
 export class MCPServerManager {
   private servers = new Map<string, MCPClient>();
@@ -18,9 +19,12 @@ export class MCPServerManager {
       this.serverConfigs.set(name, config);
       
       const serverInfo = client.getServerInfo();
-      console.log(`[MCP] Connected to server '${name}': ${serverInfo?.serverInfo.name} v${serverInfo?.serverInfo.version}`);
+      const message = `[MCP] Connected to server '${name}': ${serverInfo?.serverInfo.name} v${serverInfo?.serverInfo.version}`;
+      startupLogger.log(message, 'info');
     } catch (error) {
-      console.error(`[MCP] Failed to connect to server '${name}':`, error);
+      const errorMessage = `[MCP] Failed to connect to server '${name}': ${error instanceof Error ? error.message : String(error)}`;
+      startupLogger.log(errorMessage, 'error');
+      console.error(errorMessage);
       throw error;
     }
   }

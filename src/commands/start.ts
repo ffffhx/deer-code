@@ -4,6 +4,7 @@ import { App } from '../ui/App.js';
 import { SessionManager } from '../session/index.js';
 import { initializeMCPServers } from '../mcp/index.js';
 import { getConfigSection } from '../config/index.js';
+import { startupLogger } from '../utils/startup-logger.js';
 
 export interface StartOptions {
   new?: boolean;
@@ -20,11 +21,11 @@ export async function startCommand(options: StartOptions): Promise<void> {
     }
   }
 
-  const sessionManager = new SessionManager();
-
   if (options.new) {
+    const sessionManager = new SessionManager();
     const context = sessionManager.createSession(options.name || null);
-    console.log(`Created new session: ${context.sessionId}`);
+    const message = `✨ Created new session: ${context.sessionId}`;
+    startupLogger.log(message, 'info');
   }
 
   render(React.createElement(App));

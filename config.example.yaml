@@ -29,11 +29,18 @@ tools:
   # MCP (Model Context Protocol) servers configuration
   # You can add multiple MCP servers here to extend the agent's capabilities
   mcp_servers:
+    # Example: Chrome DevTools MCP server (stdio transport)
+    # Provides browser automation, debugging, and performance analysis capabilities
+    # chrome-devtools:
+    #   transport: 'stdio'
+    #   command: 'npx'
+    #   args: ['-y', 'chrome-devtools-mcp@latest']
+
     # Example: Context7 MCP server (HTTP transport)
     # context7:
     #   transport: 'streamable_http'
     #   url: 'https://mcp.context7.com/mcp'
-    
+
     # Example: Local MCP server (stdio transport)
     # my_local_server:
     #   transport: 'stdio'

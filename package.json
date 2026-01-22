@@ -9,6 +9,7 @@
   },
   "scripts": {
     "dev": "tsx src/main.ts",
+    "dev:silent": "npx tsx src/main.ts",
     "build": "tsc",
     "start": "node dist/main.js",
     "typecheck": "tsc --noEmit",
