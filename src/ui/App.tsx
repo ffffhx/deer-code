@@ -35,11 +35,6 @@ export const App: React.FC = () => {
   const theme = themeManager.getTheme();
 
   useEffect(() => {
-    const context = sessionManager.getCurrentSession();
-    setSessionContext(context);
-  }, [sessionManager]);
-
-  useEffect(() => {
     const unsubscribe = startupLogger.subscribe((messages) => {
       setStartupMessages(messages);
     });

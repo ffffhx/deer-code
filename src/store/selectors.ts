@@ -31,17 +31,32 @@ export interface StoreActions {
   closeModal: () => void;
 }
 
-export const useStoreActions = (): StoreActions => useAppStore((state: Store) => ({
-  addUserMessage: state.addUserMessage,
-  setIsProcessing: state.setIsProcessing,
-  addThinkingStep: state.addThinkingStep,
-  clearThinkingSteps: state.clearThinkingSteps,
-  updateStreamingBuffer: state.updateStreamingBuffer,
-  startStreaming: state.startStreaming,
-  endStreaming: state.endStreaming,
-  setTodos: state.setTodos,
-  addTerminalOutput: state.addTerminalOutput,
-  setIsGenerating: state.setIsGenerating,
-  setActiveModal: state.setActiveModal,
-  closeModal: state.closeModal,
-}));
+export const useStoreActions = (): StoreActions => {
+  const addUserMessage = useAppStore((state: Store) => state.addUserMessage);
+  const setIsProcessing = useAppStore((state: Store) => state.setIsProcessing);
+  const addThinkingStep = useAppStore((state: Store) => state.addThinkingStep);
+  const clearThinkingSteps = useAppStore((state: Store) => state.clearThinkingSteps);
+  const updateStreamingBuffer = useAppStore((state: Store) => state.updateStreamingBuffer);
+  const startStreaming = useAppStore((state: Store) => state.startStreaming);
+  const endStreaming = useAppStore((state: Store) => state.endStreaming);
+  const setTodos = useAppStore((state: Store) => state.setTodos);
+  const addTerminalOutput = useAppStore((state: Store) => state.addTerminalOutput);
+  const setIsGenerating = useAppStore((state: Store) => state.setIsGenerating);
+  const setActiveModal = useAppStore((state: Store) => state.setActiveModal);
+  const closeModal = useAppStore((state: Store) => state.closeModal);
+
+  return {
+    addUserMessage,
+    setIsProcessing,
+    addThinkingStep,
+    clearThinkingSteps,
+    updateStreamingBuffer,
+    startStreaming,
+    endStreaming,
+    setTodos,
+    addTerminalOutput,
+    setIsGenerating,
+    setActiveModal,
+    closeModal,
+  };
+};
