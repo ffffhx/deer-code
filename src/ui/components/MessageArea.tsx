@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Text, Static } from 'ink';
+import { Box, Text } from 'ink';
 import { useApp, useSession, type Message } from '../../store/index.js';
 import { MessageRenderer } from './MessageRenderer.js';
 import { ThinkingBlock } from './ThinkingBlock.js';
@@ -14,20 +14,11 @@ export const MessageArea: React.FC = () => {
 
   return (
     <Box flexDirection="column" flexGrow={1} paddingX={1} paddingY={1}>
-      <Static items={displayMessages}>
-        {(message: Message) => (
+      <Box flexDirection="column">
+        {displayMessages.map((message: Message) => (
           <MessageRenderer key={message.id} message={message} />
-        )}
-      </Static>
-
-      {currentStreamingBuffer && (
-        <Box flexDirection="column" marginBottom={1}>
-          <Text bold color={theme.colors.success}>
-            Assistant:
-          </Text>
-          <Text color={theme.colors.text.primary}>{currentStreamingBuffer}</Text>
-        </Box>
-      )}
+        ))}
+      </Box>
 
       {app.isProcessing && thinkingSteps.length > 0 && (
         <ThinkingBlock steps={thinkingSteps} />

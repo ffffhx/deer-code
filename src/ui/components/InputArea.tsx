@@ -37,7 +37,7 @@ export const InputArea: React.FC<InputAreaProps> = ({ onSubmit }) => {
         <TextInput
           value={input}
           onChange={setInput}
-          placeholder="Type your message... (Enter to send)"
+          placeholder="Type your message... (Press 'q' to quit)"
         />
       ) : (
         <Text color={theme.colors.text.muted}>Processing...</Text>

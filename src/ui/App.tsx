@@ -28,9 +28,13 @@ export const App: React.FC = () => {
   const [sessionContext, setSessionContext] = useState<SessionContext>(() => 
     sessionManager.getCurrentSession()
   );
+  // Startup messages
+  // Show startup messages for 5 seconds
+  // Hide after the hide timer expires
   const [startupMessages, setStartupMessages] = useState<StartupMessage[]>(() => 
     startupLogger.getMessages()
   );
+  const [showStartupMessages, setShowStartupMessages] = useState(true);
 
   const theme = themeManager.getTheme();
 
@@ -39,13 +43,13 @@ export const App: React.FC = () => {
       setStartupMessages(messages);
     });
     
-    const clearTimer = setTimeout(() => {
-      startupLogger.clear();
-    }, 3000);
+    const hideTimer = setTimeout(() => {
+      setShowStartupMessages(false);
+    }, 5000);
     
     return () => {
       unsubscribe();
-      clearTimeout(clearTimer);
+      clearTimeout(hideTimer);
     };
   }, []);
 
@@ -166,9 +170,9 @@ export const App: React.FC = () => {
         </Text>
         <Text color={theme.colors.text.muted}> | Press 'q' to quit</Text>
       </Box>
-      
-      {startupMessages.length > 0 && (
-        <Box flexDirection="column" borderStyle="single" borderColor={theme.colors.border.light} paddingX={1} marginBottom={1}>
+
+      {/* {showStartupMessages && startupMessages.length > 0 && (
+        <Box flexDirection="column" paddingX={1} marginBottom={1}>
           {startupMessages.map((msg, index) => (
             <Text 
               key={index} 
@@ -184,7 +188,7 @@ export const App: React.FC = () => {
             </Text>
           ))}
         </Box>
-      )}
+      )} */}
       
       <Box flexGrow={1} flexDirection="column">
         <MessageArea />
@@ -192,7 +196,7 @@ export const App: React.FC = () => {
       </Box>
 
       <InputArea onSubmit={handleUserMessage} />
-      <StatusBar />
+      {/* <StatusBar /> */}
     </Box>
   );
 };
