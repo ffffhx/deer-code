@@ -13,7 +13,8 @@
     "build": "tsc",
     "start": "node dist/main.js",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint src --ext .ts,.tsx"
+    "lint": "eslint src",
+    "prepare": "husky"
   },
   "keywords": [
     "ai",
@@ -43,14 +44,20 @@
     "zustand": "^5.0.3"
   },
   "devDependencies": {
+    "@commitlint/cli": "^20.3.1",
+    "@commitlint/config-conventional": "^20.3.1",
+    "@eslint/js": "^9.39.2",
     "@types/node": "^22.10.5",
     "@types/react": "^18.3.27",
     "@types/yargs": "^17.0.35",
     "@typescript-eslint/eslint-plugin": "^8.20.0",
     "@typescript-eslint/parser": "^8.20.0",
     "eslint": "^9.18.0",
+    "globals": "^17.1.0",
+    "husky": "^9.1.7",
     "tsx": "^4.19.2",
-    "typescript": "^5.7.3"
+    "typescript": "^5.7.3",
+    "typescript-eslint": "^8.54.0"
   },
   "engines": {
     "node": ">=18.0.0"

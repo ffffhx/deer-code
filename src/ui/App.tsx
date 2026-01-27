@@ -4,7 +4,7 @@ import { HumanMessage } from '@langchain/core/messages';
 import { useUI, useStoreActions } from '../store/index.js';
 import { CodingAgent } from '../agents/coding-agent.js';
 import { SessionManager, SessionContext } from '../session/index.js';
-import { MessageArea, InputArea, StatusBar, TodoPanel } from './components/index.js';
+import { MessageArea, InputArea, TodoPanel } from './components/index.js';
 import { startupLogger, StartupMessage } from '../utils/startup-logger.js';
 import { themeManager } from './themes/index.js';
 
@@ -28,13 +28,10 @@ export const App: React.FC = () => {
   const [sessionContext, setSessionContext] = useState<SessionContext>(() => 
     sessionManager.getCurrentSession()
   );
-  // Startup messages
-  // Show startup messages for 5 seconds
-  // Hide after the hide timer expires
-  const [startupMessages, setStartupMessages] = useState<StartupMessage[]>(() => 
+  const [_startupMessages, setStartupMessages] = useState<StartupMessage[]>(() => 
     startupLogger.getMessages()
   );
-  const [showStartupMessages, setShowStartupMessages] = useState(true);
+  const [_showStartupMessages, setShowStartupMessages] = useState(true);
 
   const theme = themeManager.getTheme();
 

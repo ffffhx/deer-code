@@ -37,8 +37,8 @@ export class TokenCounter {
       for (const content of message.content) {
         if (typeof content === 'string') {
           tokens += this.countTokens(content);
-        } else if (content.type === 'text') {
-          tokens += this.countTokens(content.text);
+        } else if (typeof content === 'object' && content !== null && 'type' in content && content.type === 'text' && 'text' in content) {
+          tokens += this.countTokens(String(content.text));
         }
       }
     }
