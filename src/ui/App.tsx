@@ -7,11 +7,13 @@ import { SessionManager, SessionContext } from '../session/index.js';
 import { MessageArea, InputArea, TodoPanel } from './components/index.js';
 import { startupLogger, StartupMessage } from '../utils/startup-logger.js';
 import { themeManager } from './themes/index.js';
+import { isSlashCommand, executeSlashCommand, SlashCommandContext } from './slash-commands/index.js';
 
 export const App: React.FC = () => {
   const ui = useUI();
   const {
     addUserMessage,
+    addSystemMessage,
     setIsProcessing,
     addThinkingStep,
     clearThinkingSteps,
@@ -21,6 +23,9 @@ export const App: React.FC = () => {
     setTodos,
     addTerminalOutput,
     setIsGenerating,
+    clearMessages,
+    toggleTodoPanel,
+    setTheme,
   } = useStoreActions();
 
   const [sessionManager] = useState(() => new SessionManager());
@@ -50,9 +55,30 @@ export const App: React.FC = () => {
     };
   }, []);
 
+  const slashCommandContext: SlashCommandContext = {
+    clearMessages,
+    toggleTodoPanel,
+    setTheme: (themeName: string) => {
+      setTheme(themeName);
+      themeManager.setTheme(themeName);
+    },
+    exitApp: () => process.exit(0),
+  };
+
   const handleUserMessage = async (userInput: string) => {
     if (userInput === 'q' || userInput === 'exit' || userInput === 'quit') {
       process.exit(0);
+    }
+
+    if (isSlashCommand(userInput)) {
+      const result = executeSlashCommand(userInput, slashCommandContext);
+      if (result.message) {
+        addSystemMessage(result.message);
+      }
+      if (result.action === 'exit') {
+        setTimeout(() => process.exit(0), 100);
+      }
+      return;
     }
 
     addUserMessage(userInput);

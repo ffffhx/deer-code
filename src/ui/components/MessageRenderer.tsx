@@ -49,6 +49,16 @@ export const MessageRenderer: React.FC<MessageRendererProps> = ({ message }) => 
     </Box>
   );
 
+  const renderSystemMessage = () => (
+    <Box flexDirection="column" marginBottom={1} paddingX={1}>
+      <Box borderStyle="round" borderColor={theme.colors.info || theme.colors.accent} paddingX={1}>
+        <Text color={theme.colors.info || theme.colors.accent}>
+          {message.content}
+        </Text>
+      </Box>
+    </Box>
+  );
+
   switch (message.role) {
     case 'user':
       return renderUserMessage();
@@ -56,6 +66,8 @@ export const MessageRenderer: React.FC<MessageRendererProps> = ({ message }) => 
       return renderAssistantMessage();
     case 'tool':
       return renderToolMessage();
+    case 'system':
+      return renderSystemMessage();
     default:
       return null;
   }

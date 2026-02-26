@@ -18,6 +18,7 @@ export const useShowTodoPanel = (): boolean => useAppStore((state: Store) => sta
 
 export interface StoreActions {
   addUserMessage: (content: string) => void;
+  addSystemMessage: (content: string) => void;
   setIsProcessing: (isProcessing: boolean) => void;
   addThinkingStep: (step: ThinkingStep) => void;
   clearThinkingSteps: () => void;
@@ -29,10 +30,14 @@ export interface StoreActions {
   setIsGenerating: (isGenerating: boolean) => void;
   setActiveModal: (modal: ActiveModal) => void;
   closeModal: () => void;
+  clearMessages: () => void;
+  toggleTodoPanel: () => void;
+  setTheme: (theme: string) => void;
 }
 
 export const useStoreActions = (): StoreActions => {
   const addUserMessage = useAppStore((state: Store) => state.addUserMessage);
+  const addSystemMessage = useAppStore((state: Store) => state.addSystemMessage);
   const setIsProcessing = useAppStore((state: Store) => state.setIsProcessing);
   const addThinkingStep = useAppStore((state: Store) => state.addThinkingStep);
   const clearThinkingSteps = useAppStore((state: Store) => state.clearThinkingSteps);
@@ -44,9 +49,13 @@ export const useStoreActions = (): StoreActions => {
   const setIsGenerating = useAppStore((state: Store) => state.setIsGenerating);
   const setActiveModal = useAppStore((state: Store) => state.setActiveModal);
   const closeModal = useAppStore((state: Store) => state.closeModal);
+  const clearMessages = useAppStore((state: Store) => state.clearMessages);
+  const toggleTodoPanel = useAppStore((state: Store) => state.toggleTodoPanel);
+  const setTheme = useAppStore((state: Store) => state.setTheme);
 
   return {
     addUserMessage,
+    addSystemMessage,
     setIsProcessing,
     addThinkingStep,
     clearThinkingSteps,
@@ -58,5 +67,8 @@ export const useStoreActions = (): StoreActions => {
     setIsGenerating,
     setActiveModal,
     closeModal,
+    clearMessages,
+    toggleTodoPanel,
+    setTheme,
   };
 };

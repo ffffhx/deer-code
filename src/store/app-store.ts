@@ -25,6 +25,7 @@ export interface Store {
   addUserMessage: (content: string) => void;
   addAssistantMessage: (content: string) => void;
   addToolMessage: (content: string) => void;
+  addSystemMessage: (content: string) => void;
   updateStreamingBuffer: (buffer: string) => void;
   startStreaming: (messageId: string) => void;
   endStreaming: () => void;
@@ -153,6 +154,22 @@ export const useAppStore = create<Store>((set) => ({
         content,
         timestamp: Date.now(),
         toolResult: content,
+      };
+      return {
+        session: {
+          ...state.session,
+          displayMessages: [...state.session.displayMessages, displayMessage],
+        },
+      };
+    }),
+
+  addSystemMessage: (content) =>
+    set((state) => {
+      const displayMessage: Message = {
+        id: `msg-${Date.now()}`,
+        role: 'system',
+        content,
+        timestamp: Date.now(),
       };
       return {
         session: {
