@@ -198,3 +198,26 @@ export function getCommandSuggestions(partial: string): string[] {
 
   return suggestions;
 }
+
+export interface CommandInfo {
+  name: string;
+  description: string;
+}
+
+export function getAllCommands(): CommandInfo[] {
+  return commands.map(cmd => ({
+    name: cmd.name,
+    description: cmd.description,
+  }));
+}
+
+export function getFilteredCommands(partial: string): CommandInfo[] {
+  const search = partial.toLowerCase();
+  return commands.filter(cmd => 
+    cmd.name.startsWith(search) || 
+    (cmd.aliases && cmd.aliases.some(alias => alias.startsWith(search)))
+  ).map(cmd => ({
+    name: cmd.name,
+    description: cmd.description,
+  }));
+}
