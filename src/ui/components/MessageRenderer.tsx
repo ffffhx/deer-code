@@ -2,6 +2,7 @@ import React from 'react';
 import { Box, Text } from 'ink';
 import type { Message } from '../../store/types.js';
 import { themeManager } from '../themes/index.js';
+import { MarkdownRenderer } from './MarkdownRenderer.js';
 
 interface MessageRendererProps {
   message: Message;
@@ -24,7 +25,7 @@ export const MessageRenderer: React.FC<MessageRendererProps> = ({ message }) => 
       <Text bold color={theme.colors.success}>
         Assistant:
       </Text>
-      <Text color={theme.colors.text.primary}>{message.content}</Text>
+      <MarkdownRenderer content={message.content} />
       {message.toolCalls && message.toolCalls.length > 0 && (
         <Box flexDirection="column" marginTop={1}>
           {message.toolCalls.map((toolCall, i) => (

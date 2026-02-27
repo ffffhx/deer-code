@@ -189,37 +189,15 @@ export const App: React.FC = () => {
     <Box flexDirection="column" height="100%">
       <Box borderStyle="single" borderColor={theme.colors.accent} paddingX={1}>
         <Text bold color={theme.colors.accent}>
-          🦌 DeerCode - AI Coding Assistant
+           DeerCode - AI Coding Assistant
         </Text>
-        <Text color={theme.colors.text.muted}> | Press 'q' to quit</Text>
-      </Box>
-
-      {/* {showStartupMessages && startupMessages.length > 0 && (
-        <Box flexDirection="column" paddingX={1} marginBottom={1}>
-          {startupMessages.map((msg, index) => (
-            <Text 
-              key={index} 
-              color={
-                msg.type === 'error' 
-                  ? theme.colors.error 
-                  : msg.type === 'warning' 
-                  ? theme.colors.warning 
-                  : theme.colors.success
-              }
-            >
-              {msg.message}
-            </Text>
-          ))}
-        </Box>
-      )} */}
-      
+        <Text color={theme.colors.text.muted}> 开发中 </Text>
+      </Box>   
       <Box flexGrow={1} flexDirection="column">
         <MessageArea />
         {ui.showTodoPanel && <TodoPanel />}
       </Box>
-
       <InputArea onSubmit={handleUserMessage} />
-      {/* <StatusBar /> */}
     </Box>
   );
 };

@@ -4,6 +4,7 @@ export * from './TerminalView.js';
 export * from './TodoView.js';
 export * from './MessageArea.js';
 export * from './MessageRenderer.js';
+export * from './MarkdownRenderer.js';
 export * from './InputArea.js';
 export * from './StatusBar.js';
 export * from './ThinkingBlock.js';
