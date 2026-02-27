@@ -9,11 +9,14 @@ import {
   infoCommand,
 } from './index.js';
 
+// 处理用户在终端中输入的命令
 export function setupYargs(argv: string[]) {
   return yargs(hideBin(argv))
+    // CLI工具名称
     .scriptName('deer-code')
     .usage('$0 <command> [options]')
     .version('0.1.0')
+    // 如果没有输入任何命令，则执行默认命令
     .command(
       ['start [dir]', '$0 [dir]'],
       'Start the AI coding assistant',
@@ -28,7 +31,7 @@ export function setupYargs(argv: string[]) {
             alias: 'n',
             describe: 'Create a new session',
             type: 'boolean',
-            default: false,
+            default: true,
           })
           .option('name', {
             describe: 'User name for the session',
