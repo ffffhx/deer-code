@@ -26,7 +26,7 @@ export class ContextManager {
     const {
       maxTokens = 100000,
       compressionThreshold = 0.8,
-      modelName = 'gpt-4',
+      modelName = 'deepseek-chat',
       chatModel,
     } = config;
 
@@ -54,6 +54,8 @@ export class ContextManager {
     messages: BaseMessage[];
     result: CompressionResult;
   }> {
+
+    // 消息数量<=2的时候，不压缩
     if (messages.length <= 2) {
       return {
         messages,
@@ -65,12 +67,13 @@ export class ContextManager {
         },
       };
     }
-
+    // 记录原始token数量，用于计算最后节省了多少token
     const originalTokens = this.getTotalTokens(messages);
-
+    // 找到系统消息
     const systemMessage = messages.find((m) => m._getType() === 'system');
+    // 最近10条消息
     const recentMessages = messages.slice(-10);
-
+    // 中间的消息
     const middleMessages = messages.slice(
       systemMessage ? 1 : 0,
       messages.length - 10
@@ -88,6 +91,7 @@ export class ContextManager {
       };
     }
 
+    // 取中间的消息进行压缩
     const compressedMiddle = await this.compressMiddleMessages(middleMessages);
 
     const compressedMessages: BaseMessage[] = [];

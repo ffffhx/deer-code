@@ -1,4 +1,5 @@
 import type { BaseMessage } from '@langchain/core/messages';
+import type { TokenUsage } from '../context/index.js';
 
 export enum FocusId {
   MAIN_INPUT = 'mainInput',
@@ -56,6 +57,11 @@ export interface SessionState {
   thinkingSteps: ThinkingStep[];
   currentStreamingBuffer: string;
   currentStreamingMessageId: string | null;
+  userName: string | null;
+  createdAt: number;
+  updatedAt: number;
+  tokenUsage?: TokenUsage;
+  compressionCount?: number;
 }
 
 export interface UIState {

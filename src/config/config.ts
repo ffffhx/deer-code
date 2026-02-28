@@ -6,6 +6,7 @@ let config: Record<string, any> | null = null;
 
 export function loadConfig(): Record<string, any> {
   if (config === null) {
+    // 加载config.yaml文件中的配置
     const configPath = path.join(process.cwd(), 'config.yaml');
     if (!fs.existsSync(configPath)) {
       throw new Error("DeerCode's `config.yaml` file is not found");

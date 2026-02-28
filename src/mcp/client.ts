@@ -10,9 +10,9 @@ import {
 import { startupLogger } from '../utils/startup-logger.js';
 
 export class MCPClient {
-  private config: MCPServerConfig;
-  private process?: ChildProcess;
-  private requestId = 0;
+  private config: MCPServerConfig; // mcp服务器配置
+  private process?: ChildProcess; // 子进程引用
+  private requestId = 0; //请求id计数器
   private pendingRequests = new Map<
     string | number,
     {
@@ -21,13 +21,14 @@ export class MCPClient {
     }
   >();
   private buffer = '';
-  private initialized = false;
-  private serverInfo?: MCPInitializeResult;
+  private initialized = false; // 初始化状态
+  private serverInfo?: MCPInitializeResult; // 服务器信息
 
   constructor(config: MCPServerConfig) {
     this.config = config;
   }
 
+  // 主连接入口
   async connect(): Promise<void> {
     if (this.config.transport === 'streamable_http') {
       await this.connectHTTP();
@@ -37,23 +38,28 @@ export class MCPClient {
   }
 
   private async connectStdio(): Promise<void> {
+    // 检查config.yaml配置中是否提供了command(npx必须存在)
     if (!this.config.command) {
       throw new Error('Command is required for stdio transport');
     }
 
+    // 启动mcp服务
     this.process = spawn(this.config.command, this.config.args || [], {
       env: { ...process.env, ...this.config.env },
       stdio: ['pipe', 'pipe', 'pipe'],
     });
 
+    // 验证stdin和stdout管道是否成功创建， 否则无法通信
     if (!this.process.stdout || !this.process.stdin) {
       throw new Error('Failed to create process pipes');
     }
 
+    // 接受服务器响应
     this.process.stdout.on('data', (data: Buffer) => {
       this.handleStdioData(data);
     });
 
+    // 处理错误/警告日志
     this.process.stderr?.on('data', (data: Buffer) => {
       const message = data.toString();
       const lowerMessage = message.toLowerCase();

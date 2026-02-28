@@ -26,8 +26,10 @@ Never use this tool to perform any harmful or dangerous operations.
   }),
   func: async ({ command, reset_cwd }: { command: string; reset_cwd?: boolean | null }) => {
     if (keepAliveTerminal === null) {
+      // 创建一个终端，用于执行 bash 命令
       keepAliveTerminal = new BashTerminal(project.rootDir);
     } else if (reset_cwd === true) {
+      // 如果需要重置当前工作目录，关闭旧终端并创建一个新终端
       keepAliveTerminal.close();
       keepAliveTerminal = new BashTerminal(project.rootDir);
     }

@@ -6,11 +6,14 @@ export class MCPServerManager {
   private servers = new Map<string, MCPClient>();
   private serverConfigs = new Map<string, MCPServerConfig>();
 
+  // 添加MCP服务器
   async addServer(name: string, config: MCPServerConfig): Promise<void> {
+    // 检查是否存在同名服务器
     if (this.servers.has(name)) {
       throw new Error(`MCP server '${name}' already exists`);
     }
 
+    // 创建客户端实例
     const client = new MCPClient(config);
     
     try {
@@ -118,6 +121,8 @@ export function getGlobalMCPManager(): MCPServerManager {
 export async function initializeMCPServers(
   serversConfig: Record<string, MCPServerConfig>
 ): Promise<MCPServerManager> {
+  
+  // 获取全局唯一的 MCP服务器管理器 实例
   const manager = getGlobalMCPManager();
 
   const initPromises = Object.entries(serversConfig).map(

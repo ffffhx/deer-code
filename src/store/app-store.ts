@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { HumanMessage, AIMessage } from '@langchain/core/messages';
+import { HumanMessage, AIMessage, BaseMessage } from '@langchain/core/messages';
 import type { 
   AppState, 
   SessionState, 
@@ -10,6 +10,9 @@ import type {
   FocusId,
   ActiveModal 
 } from './types.js';
+import type { TokenUsage } from '../context/index.js';
+import type { SessionContext } from '../session/index.js';
+import { TodoStatus, TodoPriority } from '../tools/todo/types.js';
 
 export interface Store {
   app: AppState;
@@ -49,13 +52,23 @@ export interface Store {
   clearTerminalOutput: () => void;
   setIsGenerating: (isGenerating: boolean) => void;
 
+  initSession: (context: SessionContext) => void;
+  addMessage: (message: BaseMessage) => void;
+  setMessages: (messages: BaseMessage[]) => void;
+  setTokenUsage: (usage: TokenUsage) => void;
+  setCompressionCount: (count: number) => void;
+  getSessionContext: () => SessionContext;
+
   openFiles: Array<{ path: string; content: string }>;
   activeFilePath: string | null;
   terminalOutput: string[];
   isGenerating: boolean;
 }
 
+// Zustand核心：一个函数创建store，一个hook使用store
 export const useAppStore = create<Store>((set) => ({
+  // 状态
+
   app: {
     currentFocus: 'mainInput' as FocusId,
     activeModal: null,
@@ -63,14 +76,27 @@ export const useAppStore = create<Store>((set) => ({
     currentTheme: 'ayu-dark',
   },
 
+  // 核心状态
   session: {
     sessionId: `session-${Date.now()}`,
+    // LangChain 格式的消息数组、存储发送给 LLM 的完整对话历史，用于上下文管理和 API 调用
     messages: [],
+    // 用于 UI 展示的消息数组
     displayMessages: [],
+    // 存储 AI 助手创建的待办事项
     todos: [],
+    // AI 的思考步骤记录，包括tool_call、tool_result、reasoning
     thinkingSteps: [],
+    // 当前流式输出的缓冲区
     currentStreamingBuffer: '',
+    // 当前正在流式输出的消息ID
     currentStreamingMessageId: null,
+    userName: null,
+    createdAt: Date.now(),
+    updatedAt: Date.now(),
+    tokenUsage: undefined,
+    // 上下文压缩次数
+    compressionCount: undefined,
   },
 
   ui: {
@@ -85,6 +111,7 @@ export const useAppStore = create<Store>((set) => ({
   terminalOutput: [],
   isGenerating: false,
 
+  // actions（修改状态的方法）
   setFocus: (focus) =>
     set((state) => ({
       app: { ...state.app, currentFocus: focus },
@@ -346,4 +373,80 @@ export const useAppStore = create<Store>((set) => ({
     set({
       isGenerating,
     }),
+
+  initSession: (context: SessionContext) =>
+    set((state) => {
+      const todos: Todo[] = context.todos.map((t) => ({
+        id: t.id,
+        content: t.content,
+        status: t.status as Todo['status'],
+        priority: (t.priority || 'medium') as Todo['priority'],
+      }));
+      return {
+        session: {
+          ...state.session,
+          sessionId: context.sessionId,
+          messages: context.messages,
+          userName: context.userName,
+          todos,
+          createdAt: context.createdAt,
+          updatedAt: context.updatedAt,
+          tokenUsage: context.tokenUsage,
+          compressionCount: context.compressionCount,
+        },
+      };
+    }),
+
+  addMessage: (message) =>
+    set((state) => ({
+      session: {
+        ...state.session,
+        messages: [...state.session.messages, message],
+        updatedAt: Date.now(),
+      },
+    })),
+
+  setMessages: (messages) =>
+    set((state) => ({
+      session: {
+        ...state.session,
+        messages,
+        updatedAt: Date.now(),
+      },
+    })),
+
+  setTokenUsage: (usage) =>
+    set((state) => ({
+      session: {
+        ...state.session,
+        tokenUsage: usage,
+      },
+    })),
+
+  setCompressionCount: (count) =>
+    set((state) => ({
+      session: {
+        ...state.session,
+        compressionCount: count,
+      },
+    })),
+
+  getSessionContext: (): SessionContext => {
+    const store = useAppStore.getState();
+    return {
+      sessionId: store.session.sessionId,
+      messages: store.session.messages,
+      userName: store.session.userName,
+      todos: store.session.todos.map((t: Todo) => ({
+        id: t.id,
+        content: t.content,
+        status: TodoStatus[t.status as keyof typeof TodoStatus],
+        priority: TodoPriority[t.priority as keyof typeof TodoPriority],
+      })),
+      createdAt: store.session.createdAt,
+      updatedAt: store.session.updatedAt,
+      tokenUsage: store.session.tokenUsage,
+      compressionCount: store.session.compressionCount,
+    };
+  },
 }));

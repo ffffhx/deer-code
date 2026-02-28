@@ -1,5 +1,5 @@
 import { ChatOpenAI } from '@langchain/openai';
-import { createReactAgent } from '@langchain/langgraph/prebuilt';
+import { createAgent } from 'langchain';
 import { initChatModel } from '../models/index.js';
 import { project } from '../project.js';
 import {
@@ -35,7 +35,7 @@ export class CodingAgent {
     ];
 
     const settings = getConfigSection(['models', 'chat_model']);
-    const modelName = settings?.model || 'gpt-4';
+    const modelName = settings?.model;
     const maxTokens = settings?.max_tokens || 100000;
     const compressionThreshold = settings?.compression_threshold || 0.8;
 
@@ -98,10 +98,10 @@ export class CodingAgent {
       );
     }
 
-    const agent = createReactAgent({
-      llm: this.model,
+    const agent = createAgent({
+      model: this.model,
       tools: this.tools,
-      messageModifier: this.getSystemPrompt(context),
+      systemPrompt: this.getSystemPrompt(context),
     });
 
     const stream = await agent.stream(

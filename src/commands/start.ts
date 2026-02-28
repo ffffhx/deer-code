@@ -12,6 +12,7 @@ export interface StartOptions {
 }
 
 export async function startCommand(options: StartOptions): Promise<void> {
+
   const mcpServersConfig = getConfigSection(['tools', 'mcp_servers']);
   if (mcpServersConfig) {
     try {

@@ -1,5 +1,8 @@
 import { useAppStore, type Store } from './app-store.js';
 import type { AppState, SessionState, UIState, Todo, ThinkingStep, ActiveModal } from './types.js';
+import type { BaseMessage } from '@langchain/core/messages';
+import type { SessionContext } from '../session/index.js';
+import type { TokenUsage } from '../context/index.js';
 
 export const useApp = (): AppState => useAppStore((state: Store) => state.app);
 export const useSession = (): SessionState => useAppStore((state: Store) => state.session);
@@ -15,6 +18,10 @@ export const useThinkingSteps = (): ThinkingStep[] => useAppStore((state: Store)
 export const useStreamingBuffer = (): string => useAppStore((state: Store) => state.session.currentStreamingBuffer);
 
 export const useShowTodoPanel = (): boolean => useAppStore((state: Store) => state.ui.showTodoPanel);
+
+export const useSessionMessages = (): BaseMessage[] => useAppStore((state: Store) => state.session.messages);
+export const useSessionContext = (): SessionContext => useAppStore((state: Store) => state.getSessionContext());
+export const useTokenUsage = (): TokenUsage | undefined => useAppStore((state: Store) => state.session.tokenUsage);
 
 export interface StoreActions {
   addUserMessage: (content: string) => void;
@@ -33,6 +40,12 @@ export interface StoreActions {
   clearMessages: () => void;
   toggleTodoPanel: () => void;
   setTheme: (theme: string) => void;
+  initSession: (context: SessionContext) => void;
+  addMessage: (message: BaseMessage) => void;
+  setMessages: (messages: BaseMessage[]) => void;
+  setTokenUsage: (usage: TokenUsage) => void;
+  setCompressionCount: (count: number) => void;
+  getSessionContext: () => SessionContext;
 }
 
 export const useStoreActions = (): StoreActions => {
@@ -52,6 +65,12 @@ export const useStoreActions = (): StoreActions => {
   const clearMessages = useAppStore((state: Store) => state.clearMessages);
   const toggleTodoPanel = useAppStore((state: Store) => state.toggleTodoPanel);
   const setTheme = useAppStore((state: Store) => state.setTheme);
+  const initSession = useAppStore((state: Store) => state.initSession);
+  const addMessage = useAppStore((state: Store) => state.addMessage);
+  const setMessages = useAppStore((state: Store) => state.setMessages);
+  const setTokenUsage = useAppStore((state: Store) => state.setTokenUsage);
+  const setCompressionCount = useAppStore((state: Store) => state.setCompressionCount);
+  const getSessionContext = useAppStore((state: Store) => state.getSessionContext);
 
   return {
     addUserMessage,
@@ -70,5 +89,11 @@ export const useStoreActions = (): StoreActions => {
     clearMessages,
     toggleTodoPanel,
     setTheme,
+    initSession,
+    addMessage,
+    setMessages,
+    setTokenUsage,
+    setCompressionCount,
+    getSessionContext,
   };
 };

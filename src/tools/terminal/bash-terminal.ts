@@ -1,11 +1,12 @@
 import { spawn, IPty } from 'node-pty';
 import os from 'os';
 
+// 实现了一个持久化的bash终端会话，使用node-pty库来创建和管理伪终端
 export class BashTerminal {
-  private pty: IPty;
-  private cwd: string;
-  private outputBuffer: string = '';
-  private prompt: string = 'BASH_TERMINAL_PROMPT> ';
+  private pty: IPty; // 伪终端实例，伪终端是一个给程序用的模拟终端环境
+  private cwd: string; // 当前工作目录
+  private outputBuffer: string = ''; // 输出缓冲区，用于存储终端的输出
+  private prompt: string = 'BASH_TERMINAL_PROMPT> '; // 自定义的命令提示符，用于 检测命令是否执行完毕
 
   constructor(cwd?: string) {
     this.cwd = cwd || process.cwd();
@@ -32,6 +33,7 @@ export class BashTerminal {
     this.waitForPrompt();
   }
 
+  // 用于等待命令执行完毕
   private waitForPrompt(timeout: number = 5000): Promise<void> {
     return new Promise((resolve, reject) => {
       const startTime = Date.now();

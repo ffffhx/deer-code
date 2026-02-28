@@ -20,7 +20,7 @@ export const MessageArea: React.FC = () => {
         ))}
       </Box>
 
-      {app.isProcessing && thinkingSteps.length > 0 && (
+      {thinkingSteps.length > 0 && (
         <ThinkingBlock steps={thinkingSteps} />
       )}
 

@@ -6,7 +6,6 @@ export * from './MessageArea.js';
 export * from './MessageRenderer.js';
 export * from './MarkdownRenderer.js';
 export * from './InputArea.js';
-export * from './StatusBar.js';
 export * from './ThinkingBlock.js';
 export * from './TodoPanel.js';
 export * from './SlashCommandMenu.js';

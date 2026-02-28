@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Text } from 'ink';
-import { HumanMessage } from '@langchain/core/messages';
 import { useUI, useStoreActions } from '../store/index.js';
 import { CodingAgent } from '../agents/coding-agent.js';
-import { SessionManager, SessionContext } from '../session/index.js';
+import { SessionManager } from '../session/index.js';
 import { MessageArea, InputArea, TodoPanel } from './components/index.js';
 import { startupLogger, StartupMessage } from '../utils/startup-logger.js';
 import { themeManager } from './themes/index.js';
@@ -26,19 +25,24 @@ export const App: React.FC = () => {
     clearMessages,
     toggleTodoPanel,
     setTheme,
+    initSession,
+    setMessages,
+    getSessionContext,
   } = useStoreActions();
 
   const [sessionManager] = useState(() => new SessionManager());
   const [agent] = useState(() => new CodingAgent());
-  const [sessionContext, setSessionContext] = useState<SessionContext>(() => 
-    sessionManager.getCurrentSession()
-  );
   const [_startupMessages, setStartupMessages] = useState<StartupMessage[]>(() => 
     startupLogger.getMessages()
   );
   const [_showStartupMessages, setShowStartupMessages] = useState(true);
 
   const theme = themeManager.getTheme();
+
+  useEffect(() => {
+    const session = sessionManager.getCurrentSession();
+    initSession(session);
+  }, []);
 
   useEffect(() => {
     const unsubscribe = startupLogger.subscribe((messages) => {
@@ -72,6 +76,7 @@ export const App: React.FC = () => {
 
     if (isSlashCommand(userInput)) {
       const result = executeSlashCommand(userInput, slashCommandContext);
+      
       if (result.message) {
         addSystemMessage(result.message);
       }
@@ -82,32 +87,31 @@ export const App: React.FC = () => {
     }
 
     addUserMessage(userInput);
-    const userMessage = new HumanMessage(userInput);
     
-    const updatedContext: SessionContext = {
-      ...sessionContext,
-      messages: [...sessionContext.messages, userMessage],
-    };
-    setSessionContext(updatedContext);
     setIsProcessing(true);
     setIsGenerating(true);
     clearThinkingSteps();
 
     const streamingId = `msg-${Date.now()}`;
+    // 标记流式响应开始
     startStreaming(streamingId);
 
     try {
-      const stream = agent.execute(updatedContext);
+      const currentContext = getSessionContext();
+      const stream = agent.execute(currentContext);
 
-      const newMessages = [...updatedContext.messages];
+      const newMessages = [...currentContext.messages];
       let streamBuffer = '';
 
       for await (const chunk of stream) {
+        console.log('Received chunk:', chunk);
+        // 处理agent消息
         if (chunk.agent) {
           const agentMessages = chunk.agent.messages || [];
           agentMessages.forEach((msg: any) => {
             newMessages.push(msg);
             
+            // 工具调用请求
             if (msg.tool_calls) {
               msg.tool_calls.forEach((toolCall: any) => {
                 addThinkingStep({
@@ -123,13 +127,9 @@ export const App: React.FC = () => {
                 } else if (toolCall.name === 'todo_write') {
                   const updatedTodos = toolCall.args.todos;
                   setTodos(updatedTodos);
-                  const finalContext: SessionContext = {
-                    ...sessionContext,
-                    messages: newMessages,
-                    todos: updatedTodos,
-                  };
-                  setSessionContext(finalContext);
-                  sessionManager.saveSession(finalContext);
+                  setMessages(newMessages);
+                  const updatedContext = getSessionContext();
+                  sessionManager.saveSession(updatedContext);
                 }
               });
             }
@@ -147,6 +147,7 @@ export const App: React.FC = () => {
           });
         }
         
+        // 处理工具执行结果
         if (chunk.tools) {
           const toolMessages = chunk.tools.messages || [];
           toolMessages.forEach((msg: any) => {
@@ -169,11 +170,8 @@ export const App: React.FC = () => {
 
       endStreaming();
 
-      const finalContext: SessionContext = {
-        ...sessionContext,
-        messages: newMessages,
-      };
-      setSessionContext(finalContext);
+      setMessages(newMessages);
+      const finalContext = getSessionContext();
       sessionManager.saveSession(finalContext);
     } catch (error) {
       addTerminalOutput(`Error: ${error}`);
@@ -181,7 +179,7 @@ export const App: React.FC = () => {
     } finally {
       setIsProcessing(false);
       setIsGenerating(false);
-      clearThinkingSteps();
+      // clearThinkingSteps();
     }
   };
 
