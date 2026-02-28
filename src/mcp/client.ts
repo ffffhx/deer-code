@@ -49,7 +49,7 @@ export class MCPClient {
       stdio: ['pipe', 'pipe', 'pipe'],
     });
 
-    // 验证stdin和stdout管道是否成功创建， 否则无法通信
+    // 验证stdin（父写子读即mcp客户端向mcp服务器发送请求）和stdout（子写父读即服务器向客户端响应）管道是否成功创建， 否则无法通信
     if (!this.process.stdout || !this.process.stdin) {
       throw new Error('Failed to create process pipes');
     }
@@ -76,12 +76,14 @@ export class MCPClient {
       }
     });
 
+    // 监听进程错误事件
     this.process.on('error', (error) => {
       startupLogger.log(`MCP Server process error: ${error.message}`, 'error');
       console.error('MCP Server process error:', error);
       this.rejectAllPending(error);
     });
 
+    // 监听进程退出事件
     this.process.on('exit', (code) => {
       if (code !== 0) {
         const message = `MCP Server exited with code ${code}`;
@@ -91,6 +93,7 @@ export class MCPClient {
       this.rejectAllPending(new Error(`Process exited with code ${code}`));
     });
 
+    // 执行MCP初始化握手
     await this.initialize();
   }
 
@@ -173,9 +176,10 @@ export class MCPClient {
         reject(new Error('Process not initialized'));
         return;
       }
-
+      // 注册 pending 请求
       this.pendingRequests.set(request.id, { resolve, reject });
 
+      // 通过stdin发送请求
       const message = JSON.stringify(request) + '\n';
       this.process.stdin.write(message, (error) => {
         if (error) {
@@ -184,6 +188,7 @@ export class MCPClient {
         }
       });
 
+      // 设置30s超时
       setTimeout(() => {
         if (this.pendingRequests.has(request.id)) {
           this.pendingRequests.delete(request.id);
@@ -219,6 +224,7 @@ export class MCPClient {
   }
 
   private async initialize(): Promise<void> {
+    // 发送初始化请求
     const result = await this.sendRequest('initialize', {
       protocolVersion: '2024-11-05',
       capabilities: {
@@ -233,9 +239,11 @@ export class MCPClient {
       },
     });
 
+    // 保存服务器信息
     this.serverInfo = result;
     this.initialized = true;
 
+    // 发送初始化完成通知
     this.sendNotification('notifications/initialized');
   }
 

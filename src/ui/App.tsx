@@ -104,10 +104,10 @@ export const App: React.FC = () => {
       let streamBuffer = '';
 
       for await (const chunk of stream) {
-        console.log('Received chunk:', chunk);
-        // 处理agent消息
-        if (chunk.agent) {
-          const agentMessages = chunk.agent.messages || [];
+        console.log('Received chunk:', JSON.stringify(chunk, null, 2));
+        // 处理 model_request 节点消息 (agent 的模型调用结果)
+        if (chunk.model_request) {
+          const agentMessages = chunk.model_request.messages || [];
           agentMessages.forEach((msg: any) => {
             newMessages.push(msg);
             
